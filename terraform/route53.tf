@@ -47,16 +47,16 @@
 #   }
 # }
 
-data "aws_route53_zone" "domain" {
-  name = var.domain_name
-}
+# data "aws_route53_zone" "domain" {
+#   name = var.domain_name
+# }
 
-# ACM certificate validation resource using the certificate ARN and a list of validation record FQDNs.
-resource "aws_route53_record" "site_cert_dns" {
-  allow_overwrite = true
-  name            = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_name
-  records         = [tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_value]
-  type            = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_type
-  zone_id         = data.aws_route53_zone.domain.zone_id
-  ttl             = 60
-}
+# # ACM certificate validation resource using the certificate ARN and a list of validation record FQDNs.
+# resource "aws_route53_record" "site_cert_dns" {
+#   allow_overwrite = true
+#   name            = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_name
+#   records         = [tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_value]
+#   type            = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_type
+#   zone_id         = data.aws_route53_zone.domain.zone_id
+#   ttl             = 60
+# }

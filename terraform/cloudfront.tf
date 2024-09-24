@@ -35,19 +35,23 @@ resource "aws_cloudfront_distribution" "static_website_distribution" {
     max_ttl = 86400
   }
 
-  logging_config {
-    bucket = data.aws_s3_bucket.log-bucket.bucket_regional_domain_name
-    include_cookies = false
-    prefix = "cloudfront-logs"
-  }
+  # logging_config {
+  #   bucket = data.aws_s3_bucket.log-bucket.bucket_regional_domain_name
+  #   include_cookies = false
+  #   prefix = "cloudfront-logs"
+  # }
 
   price_class = "PriceClass_100"
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.cert.arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021" 
+    cloudfront_default_certificate = true
   }
+
+  # viewer_certificate {
+  #   acm_certificate_arn      = aws_acm_certificate.cert.arn
+  #   ssl_support_method       = "sni-only"
+  #   minimum_protocol_version = "TLSv1.2_2021" 
+  # }
 
   restrictions {
     geo_restriction {

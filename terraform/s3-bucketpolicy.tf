@@ -10,7 +10,7 @@ resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
 resource "aws_s3_bucket_public_access_block" "example" {
   bucket = data.aws_s3_bucket.root-bucket.id
 
-  block_public_acls       = true
+  block_public_acls       = false
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
@@ -19,10 +19,10 @@ resource "aws_s3_bucket_public_access_block" "example" {
 resource "aws_s3_bucket_public_access_block" "log_acl" {
   bucket = data.aws_s3_bucket.log-bucket.id
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 data "aws_iam_policy_document" "origin" {
@@ -51,6 +51,27 @@ data "aws_iam_policy_document" "origin" {
         aws_cloudfront_distribution.static_website_distribution.arn
       ]
     }
+  }
+
+  statement {
+    sid    = "GitHubActionsWriteAccess"
+    effect = "Allow"
+    
+    # Allow these actions to upload/write objects
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+    
+    # Replace with your IAM user's ARN
+    principals {
+      identifiers = ["arn:aws:iam::653956157426:user/Github_upload_s3"]
+      type        = "AWS"
+    }
+    
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.bucket-root.bucket}/*"
+    ]
   }
 }
 
@@ -88,5 +109,19 @@ data "aws_iam_policy_document" "logs_policy" {
         aws_cloudfront_distribution.static_website_distribution.arn
       ]
     }
+
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+      values   = ["bucket-owner-full-control"]
+    }
   }
+}
+
+resource "aws_s3_bucket_policy" "logs_policy" {
+  depends_on = [
+    aws_cloudfront_distribution.static_website_distribution
+  ]
+  bucket = aws_s3_bucket.bucket-log.id
+  policy = data.aws_iam_policy_document.logs_policy.json
 }
