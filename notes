@@ -1,0 +1,1 @@
+# compile scss to css with npm "npx sass --watch scss/style.scss css/style.css" in website folder

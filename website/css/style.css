@@ -9210,7 +9210,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .section-title span {
   position: relative;
-  background: rgba(255, 242, 0, 0.631372549);
+  background: rgba(255, 242, 0, 0.4666666667);
   z-index: 1;
 }
 
