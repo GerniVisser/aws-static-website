@@ -100,3 +100,16 @@
     
 })(jQuery);
 
+function loadHTML(component, elementId) {
+    fetch('./components/' + component)
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById(elementId).innerHTML = data;
+      })
+      .catch(error => console.error('Error loading component:', error));
+  }
+  
+  // Load the header and footer
+  loadHTML('header.html', 'header-placeholder');
+  loadHTML('footer.html', 'footer-placeholder');
+
